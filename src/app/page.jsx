@@ -45,8 +45,8 @@ export default function Home() {
   const toggleTodo = (todoId) => {
     setTodos(
       todos.map((todo) =>
-        todo.id === todoId ? { ...todo, checked: !todo.checked } : todo
-      )
+        todo.id === todoId ? { ...todo, checked: !todo.checked } : todo,
+      ),
     );
   };
 
@@ -66,7 +66,7 @@ export default function Home() {
   const total = todos.length;
   const clearCompleted = () => {
     const hariu = confirm(
-      "Are you sure you want to clear all completed tasks?"
+      "Are you sure you want to clear all completed tasks?",
     );
     if (!hariu) {
       return;
@@ -75,7 +75,7 @@ export default function Home() {
     setTodos(clearedTodos);
   };
   return (
-    <div className="flex flex-col mx-auto w-94 bg-white mt-25 px-4 py-6 gap-5 rounded-xl shadow-2xl text-black">
+    <div className="flex flex-col mx-auto w-94 bg-white mt-25 px-4 py-6 gap-5 rounded-xl shadow-2xl text-black font-display">
       <h1 className="w-86 h-7 flex justify-center text-xl font-semibold">
         To-Do list
       </h1>
@@ -86,6 +86,12 @@ export default function Home() {
           value={inputValue}
           onChange={(event) => handleChange(event)}
           placeholder="Add a new task..."
+          onKeyDown={(enter) => {
+            if (enter.key === "Enter") {
+              enter.preventDefault();
+              onAdd();
+            }
+          }}
         ></input>
         <button
           onClick={onAdd}
@@ -98,40 +104,42 @@ export default function Home() {
       <div className="flex gap-1.5">
         <button
           onClick={() => category("All")}
-          className=" px-3 py-1 flex items-center justify-center rounded-md bg-[#3c82f6] text-[#f9f9f9] border-0"
+          className={`px-3 py-1 flex items-center justify-center rounded-md border-0 ${sorted === "All" ? "bg-[#3c82f6] text-[#f9f9f9]" : "bg-[#F3F4F6] text-[#363636]"}`}
         >
           All
         </button>
         <button
           onClick={() => category("Active")}
-          className="px-3 py-1flex items-center justify-center rounded-md bg-[#3c82f6] text-[#f9f9f9] border-0"
+          className={`px-3 py-1 flex items-center justify-center rounded-md border-0 ${sorted === "Active" ? "bg-[#3c82f6] text-[#f9f9f9]" : "bg-[#F3F4F6] text-[#363636]"}`}
         >
           Active
         </button>
         <button
           onClick={() => category("Completed")}
-          className="px-3 py-1 flex items-center justify-center rounded-md bg-[#3c82f6] text-[#f9f9f9] border-0"
+          className={`px-3 py-1 flex items-center justify-center rounded-md border-0 ${sorted === "Completed" ? "bg-[#3c82f6] text-[#f9f9f9]" : "bg-[#F3F4F6] text-[#363636]"}`}
         >
           Completed
         </button>
       </div>
-      <div className="flex flex-col items-center gap-2.5 ">
+
+      <div className="flex flex-col max-h-68 items-center gap-2.5 overflow-auto">
         {visibleTodos.map((todo, id) => {
+          //category-d angilj haruulah
+
           return (
             <div
               key={id}
-              className="flex gap-2 rounded-xl bg-[#f9fafb] items-center px-3 w-86"
+              className="flex rounded-xl bg-[#f9fafb] w-full items-center  justify-between px-4 py-2 gap-5 relative"
             >
-              {/* <div >No tasks yet. Add one above!</div> */}
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center">
                 <input
                   type="checkbox"
                   checked={todo.checked}
                   onChange={() => toggleTodo(todo.id)}
-                  className="w-5 h-5 rounded-xs pl-4"
-                ></input>
+                  className=" justify-items-start absolute h-5 w-5"
+                />
                 <p
-                  className={`w-61 text-lg whitespace-normal h-15 flex items-center  ${
+                  className={`max-h-30 text-sm pl-8 pr-4 py-4 break-all items-center overflow-auto   ${
                     todo.checked ? "line-through" : ""
                   }`}
                 >
@@ -139,7 +147,7 @@ export default function Home() {
                 </p>
               </div>
               <button
-                className="w-17 h-8 rounded-md bg-[#fef2f2] text-[#ef4444] py-1.5 px-3"
+                className="py-1.5 px-3 rounded-md bg-[#fef2f2] text-[#ef4444] "
                 onClick={() => deleted(todo.id)}
               >
                 Delete
@@ -149,17 +157,24 @@ export default function Home() {
         })}
       </div>
 
-      <div className="flex justify-between">
-        <div className="text-sm text-gray-500">
-          {completed} of {total} tasks completed
+      {/* ternary bichne */}
+      {todos.length === 0 ? (
+        <p className="h-7 text-center text-sm text-[#6b7280] relative t-2.5">
+          No tasks yet. Add one above!
+        </p>
+      ) : (
+        <div className="flex justify-between pt-4 border border-solid border-t-2 border-x-0 border-b-0 border-[#E4E4E7]">
+          <div className="text-sm text-gray-500">
+            {completed} of {total} tasks completed
+          </div>
+          <button
+            className="text-sm text-red-500 bg-white border-white "
+            onClick={clearCompleted}
+          >
+            Clear completed
+          </button>
         </div>
-        <button
-          className="text-sm text-red-500 bg-white border-white "
-          onClick={clearCompleted}
-        >
-          Clear completed
-        </button>
-      </div>
+      )}
 
       <div className="flex justify-center w-full h-4 gap-1">
         <div className="text-3 h-4 text-gray-500">Powered by</div>
