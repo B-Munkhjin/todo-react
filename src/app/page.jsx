@@ -12,13 +12,15 @@ export default function Home() {
     }
     // shineer todo oruulhad uuseh zuils
     const newTodo = {
-      id: todos.length,
+      id: crypto.randomUUID(), //random string too gargaj ogno (tegheer davtagdahgui)
       text: inputValue,
       checked: false, //change its value (active)
     };
     setTodos([...todos, newTodo]);
-    setInputValue("");
+    setInputValue(""); //add darad nemeh uyd input value hoosn bolno
+    console.log("id:", newTodo);
   };
+
   // utga-iig ni avhiing tuld event.target.value bichj bn
   const handleChange = (event) => {
     setInputValue(event.target.value);
@@ -40,7 +42,9 @@ export default function Home() {
       }
     });
     setTodos(newTodos);
+    console.log(newTodos);
   };
+
   // checked iin shalgah
   const toggleTodo = (todoId) => {
     setTodos(
